@@ -41,11 +41,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Serve Frontend in Production
-if (process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT) {
-  const clientBuildPath = path.join(__dirname, '../../client/dist');
+// Serve Frontend (always — for Railway single-service deployment)
+const clientBuildPath = path.join(__dirname, '../../client/dist');
+const fs = require('fs');
+if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
-  
   app.get('*', (req, res) => {
     res.sendFile(path.join(clientBuildPath, 'index.html'));
   });
