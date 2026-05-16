@@ -108,7 +108,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-4xl font-display font-extrabold text-slate-900 tracking-tight">
-            {getGreeting()}, {user?.name.split(' ')[0]} 👋
+            {getGreeting()}, {user?.name.split(' ')[0]}
           </h1>
           <p className="text-slate-500 mt-2 font-medium">Here's what's happening with your projects today.</p>
         </div>
