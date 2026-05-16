@@ -30,33 +30,60 @@ app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    db_url_exists: !!process.env.DATABASE_URL
+  });
 });
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({
-    message: err.message || 'Internal Server Error',
+app.get('/api/debug-path', (req, res) => {
+  const clientBuildPath = path.join(__dirname, '../../client/dist');
+  res.json({
+    dirname: __dirname,
+    clientBuildPath,
+    exists: fs.existsSync(clientBuildPath),
+    files: fs.existsSync(clientBuildPath) ? fs.readdirSync(clientBuildPath) : []
   });
 });
 
 // Serve Frontend
 const clientBuildPath = path.join(__dirname, '../../client/dist');
-const fs = require('fs');
 console.log('[TaskFlow] Client dist path:', clientBuildPath);
 console.log('[TaskFlow] Client dist exists:', fs.existsSync(clientBuildPath));
 
 app.use(express.static(clientBuildPath));
 
-app.use(function (req, res) {
+app.get('*', (req, res, next) => {
+  // If it's an API route that didn't match, let it go to 404 or error handler
+  if (req.path.startsWith('/api')) return next();
+  
   const indexPath = path.join(clientBuildPath, 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(503).send('<h2>Frontend not built. dist/index.html missing at: ' + indexPath + '</h2>');
+    next(); // Fall through to the final handler
   }
 });
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('[TaskFlow] Error:', err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+  });
+});
+
+// Final 404 handler
+app.use((req, res) => {
+  res.status(404).send(`
+    <h2>404 - Not Found</h2>
+    <p>Route: ${req.path}</p>
+    <p>If this is the home page, the frontend build might be missing.</p>
+    <p>Check /api/debug-path for details.</p>
+  `);
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
