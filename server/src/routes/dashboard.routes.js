@@ -9,5 +9,6 @@ router.get('/stats', dashboardController.getStats);
 router.get('/activity', dashboardController.getActivity);
 router.get('/overdue', dashboardController.getOverdueTasks);
 router.get('/chart', dashboardController.getChartData);
+router.get('/advanced', dashboardController.getAdvancedDashboard);
 
 module.exports = router;

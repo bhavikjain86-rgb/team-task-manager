@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetails from './pages/ProjectDetails';
 import Team from './pages/Team';
+import ScrollToTop from './components/ScrollToTop';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children, adminOnly = false }) => {
@@ -72,6 +73,7 @@ function AppRoutes() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <AppRoutes />
       </AuthProvider>
