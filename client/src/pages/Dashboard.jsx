@@ -14,7 +14,8 @@ import {
   MoreHorizontal,
   Calendar,
   MessageSquare,
-  Users
+  Users,
+  FolderKanban
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { timeAgo, getPriorityStyles, isOverdue } from '../utils/helpers';
@@ -113,36 +114,42 @@ const Dashboard = () => {
     </div>
   );
 
+  if (!data || !data.kpis) return (
+    <div className="py-20 text-center">
+      <p className="text-muted">Unable to load dashboard data. Please refresh.</p>
+    </div>
+  );
+
   return (
     <div className="space-y-8 pb-10">
       {/* Top Row - KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KPICard 
           title="Total Projects" 
-          value={data.kpis.projects.val} 
-          trend={data.kpis.projects.trend} 
-          sparkline={data.kpis.projects.sparkline} 
+          value={data.kpis.projects?.val || 0} 
+          trend={data.kpis.projects?.trend || '0'} 
+          sparkline={data.kpis.projects?.sparkline || []} 
           icon={FolderKanban}
         />
         <KPICard 
           title="Tasks This Week" 
-          value={data.kpis.tasks.val} 
-          trend={data.kpis.tasks.trend} 
-          sparkline={data.kpis.tasks.sparkline} 
+          value={data.kpis.tasks?.val || 0} 
+          trend={data.kpis.tasks?.trend || '0'} 
+          sparkline={data.kpis.tasks?.sparkline || []} 
           icon={Calendar}
         />
         <KPICard 
           title="Completion Rate" 
-          value={`${data.kpis.completion.val}%`} 
-          trend={data.kpis.completion.trend} 
+          value={`${data.kpis.completion?.val || 0}%`} 
+          trend={data.kpis.completion?.trend || '0'} 
           sparkline={[]} 
           icon={CheckCircle2}
           color="green"
         />
         <KPICard 
           title="Overdue Tasks" 
-          value={data.kpis.overdue.val} 
-          trend={data.kpis.overdue.trend} 
+          value={data.kpis.overdue?.val || 0} 
+          trend={data.kpis.overdue?.trend || '0'} 
           sparkline={[]} 
           icon={AlertCircle}
         />
@@ -161,7 +168,7 @@ const Dashboard = () => {
           </div>
           
           <div className="flex-1 overflow-y-auto">
-            {data.myTasks.length > 0 ? data.myTasks.map((task) => (
+            {data.myTasks && data.myTasks.length > 0 ? data.myTasks.map((task) => (
               <div key={task.id} className="flex items-center gap-4 p-4 border-b border-white/5 hover:bg-white/[0.02] transition-all group relative">
                 <div className={`absolute left-0 top-0 bottom-0 w-1 ${getPriorityStyles(task.priority).text.replace('text-', 'bg-')}`} />
                 <div className="flex-1 min-w-0 pl-2">
@@ -203,7 +210,7 @@ const Dashboard = () => {
               <h2 className="text-xs font-bold uppercase tracking-widest">Team Activity</h2>
             </div>
             <div className="flex-1 overflow-y-auto custom-scrollbar">
-              {data.activity.map((act, i) => (
+              {data.activity && data.activity.map((act, i) => (
                 <div key={i} className="p-4 border-b border-white/5 last:border-0 hover:bg-white/[0.01] transition-all">
                   <div className="flex gap-3">
                     <div className="w-7 h-7 rounded-full bg-accent-orange/20 flex items-center justify-center text-accent-orange font-bold text-[10px] uppercase shrink-0">
@@ -225,7 +232,7 @@ const Dashboard = () => {
               <h2 className="text-xs font-bold uppercase tracking-widest">Upcoming Deadlines</h2>
             </div>
             <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
-              {data.upcoming.map((task) => (
+              {data.upcoming && data.upcoming.map((task) => (
                 <div key={task.id} className="p-3 bg-white/5 rounded-xl border border-white/5 mb-2 hover:border-white/20 transition-all cursor-pointer">
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-white truncate pr-2">{task.title}</span>
@@ -266,7 +273,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {data.projectHealth.map((proj) => (
+              {data.projectHealth && data.projectHealth.map((proj) => (
                 <tr 
                   key={proj.id} 
                   className="group hover:bg-white/[0.02] transition-colors cursor-pointer"

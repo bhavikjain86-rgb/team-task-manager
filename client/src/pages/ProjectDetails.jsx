@@ -18,7 +18,8 @@ import {
   Circle,
   Flag,
   User,
-  Paperclip
+  Paperclip,
+  RefreshCw
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getPriorityStyles, isOverdue, timeAgo } from '../utils/helpers';
@@ -338,9 +339,10 @@ const ProjectDetails = () => {
 
   if (loading || !project) return <div className="p-8 text-white flex items-center gap-3"><RefreshCw className="w-5 h-5 animate-spin" /> Loading workspace...</div>;
 
-  const todoTasks = project.tasks.filter(t => t.status === 'TODO');
-  const inProgressTasks = project.tasks.filter(t => t.status === 'IN_PROGRESS');
-  const doneTasks = project.tasks.filter(t => t.status === 'DONE');
+  const tasks = project.tasks || [];
+  const todoTasks = tasks.filter(t => t.status === 'TODO');
+  const inProgressTasks = tasks.filter(t => t.status === 'IN_PROGRESS');
+  const doneTasks = tasks.filter(t => t.status === 'DONE');
 
   return (
     <div className="flex flex-col h-full -m-4 md:-m-8">
