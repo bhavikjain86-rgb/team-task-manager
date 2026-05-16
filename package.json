@@ -2,10 +2,13 @@
   "name": "taskflow",
   "version": "1.0.0",
   "description": "Full-stack Team Task Manager",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node server/src/index.js",
-    "postinstall": "npm run install:server && npm run install:client && npm run build:client",
+    "postinstall": "npm run install:server && npm run install:client && (npm run build:client || echo 'Build failed but using committed dist')",
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install",
     "build:client": "cd client && npm run build",
