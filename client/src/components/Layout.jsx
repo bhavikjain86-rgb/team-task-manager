@@ -1,10 +1,31 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, FolderKanban, Users, LogOut } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  FolderKanban, 
+  Users, 
+  LogOut, 
+  Bell, 
+  Settings,
+  Search,
+  HelpCircle
+} from 'lucide-react';
+
+const SidebarLink = ({ to, icon: Icon, label }) => (
+  <NavLink
+    to={to}
+    className={({ isActive }) => 
+      isActive ? 'nav-link-active' : 'nav-link'
+    }
+  >
+    <Icon className="w-5 h-5" />
+    <span className="text-sm">{label}</span>
+  </NavLink>
+);
 
 const Layout = () => {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -12,91 +33,107 @@ const Layout = () => {
     navigate('/login');
   };
 
-  const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Projects', path: '/projects', icon: FolderKanban },
-    ...(isAdmin ? [{ name: 'Team', path: '/team', icon: Users }] : [])
-  ];
-
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
-      {/* Sidebar (Desktop) / Bottom Nav (Mobile) */}
-      <aside className="fixed bottom-0 w-full md:relative md:w-64 bg-white border-t md:border-t-0 md:border-r border-slate-200 flex md:flex-col justify-between z-50">
-        <div className="flex flex-row md:flex-col w-full">
-          {/* Logo - Hidden on mobile bottom bar, shown on desktop */}
-          <div className="hidden md:flex h-16 items-center px-6 border-b border-slate-100">
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
-              TaskFlow
-            </span>
+    <div className="flex h-screen bg-slate-50">
+      {/* Sidebar - Desktop */}
+      <aside className="hidden md:flex flex-col w-72 bg-[#0F172A] border-r border-slate-800 p-6">
+        <div className="flex items-center gap-3 mb-10 px-2">
+          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <FolderKanban className="text-white w-5 h-5" />
           </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 flex flex-row md:flex-col justify-around md:justify-start md:p-4 md:space-y-1 overflow-x-auto">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.path}
-                className={({ isActive }) =>
-                  `flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 px-3 py-3 md:py-2 flex-1 md:flex-none text-[10px] md:text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-indigo-50 md:bg-indigo-600 text-indigo-700 md:text-white rounded-none md:rounded-md border-t-2 border-indigo-600 md:border-0'
-                      : 'text-slate-500 hover:bg-slate-50 md:hover:bg-slate-100 hover:text-slate-900 border-t-2 border-transparent md:border-0 md:rounded-md'
-                  }`
-                }
-              >
-                <item.icon className="w-5 h-5 md:w-5 md:h-5" />
-                <span className="truncate">{item.name}</span>
-              </NavLink>
-            ))}
-          </nav>
+          <span className="text-xl font-display font-extrabold text-white tracking-tight">TaskFlow</span>
         </div>
 
-        {/* User Profile Block - Hidden on mobile */}
-        <div className="hidden md:block p-4 border-t border-slate-200">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold flex-shrink-0">
+        <nav className="flex-1 space-y-2">
+          <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
+          <SidebarLink to="/projects" icon={FolderKanban} label="Projects" />
+          {isAdmin && <SidebarLink to="/team" icon={Users} label="Team Management" />}
+        </nav>
+
+        <div className="pt-6 border-t border-slate-800 space-y-1">
+          <button className="nav-link w-full">
+            <Settings className="w-5 h-5" />
+            <span className="text-sm">Settings</span>
+          </button>
+          <button onClick={handleLogout} className="nav-link w-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
+            <LogOut className="w-5 h-5" />
+            <span className="text-sm">Logout</span>
+          </button>
+        </div>
+
+        <div className="mt-8 p-4 bg-slate-800/50 rounded-2xl border border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-900 truncate">{user?.name}</p>
-              <div className="flex items-center gap-2">
-                <p className="text-xs text-slate-500 truncate">{user?.email}</p>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${isAdmin ? 'bg-violet-100 text-violet-700' : 'bg-slate-100 text-slate-600'}`}>
-                  {user?.role}
-                </span>
-              </div>
+            <div className="flex-1 overflow-hidden">
+              <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
+              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{user?.role}</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 w-full px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:bg-red-50 hover:text-red-600 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign out
-          </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-        {/* Mobile Header (Shows Logo and Logout since bottom nav doesn't have it) */}
-        <div className="md:hidden flex justify-between items-center bg-white p-4 border-b border-slate-200 sticky top-0 z-40">
-          <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
-            TaskFlow
-          </span>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm border border-indigo-200">
-              {user?.name?.charAt(0).toUpperCase()}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Top Header */}
+        <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between z-10 shrink-0">
+          <div className="flex items-center gap-4 flex-1 max-w-xl">
+            <div className="relative w-full max-w-sm group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Search projects, tasks, or members..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+              />
             </div>
-            <button onClick={handleLogout} className="text-slate-400 hover:text-red-500">
-              <LogOut className="w-5 h-5" />
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
             </button>
+            <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">
+              <HelpCircle className="w-5 h-5" />
+            </button>
+            <div className="h-8 w-px bg-slate-200 mx-2" />
+            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 p-0.5">
+              <div className="w-full h-full rounded-[10px] bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
+                {user?.name?.charAt(0).toUpperCase()}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto p-8 scroll-smooth">
+          <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Outlet />
           </div>
         </div>
-        
-        <div className="p-4 md:p-8 max-w-[1600px] mx-auto">
-          <Outlet />
-        </div>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="md:hidden h-16 bg-white border-t border-slate-200 flex items-center justify-around px-2 shrink-0">
+          <NavLink to="/dashboard" className={({ isActive }) => `flex flex-col items-center gap-1 p-2 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <LayoutDashboard className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Dashboard</span>
+          </NavLink>
+          <NavLink to="/projects" className={({ isActive }) => `flex flex-col items-center gap-1 p-2 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <FolderKanban className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Projects</span>
+          </NavLink>
+          {isAdmin && (
+            <NavLink to="/team" className={({ isActive }) => `flex flex-col items-center gap-1 p-2 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+              <Users className="w-5 h-5" />
+              <span className="text-[10px] font-bold">Team</span>
+            </NavLink>
+          )}
+          <button onClick={handleLogout} className="flex flex-col items-center gap-1 p-2 text-slate-400">
+            <LogOut className="w-5 h-5" />
+            <span className="text-[10px] font-bold">Exit</span>
+          </button>
+        </nav>
       </main>
     </div>
   );
