@@ -1,9 +1,9 @@
 node_modules/
 .env
-dist/
 .DS_Store
 *.log
 .railway/
 build/
 coverage/
 *.local
+server/prisma/migrations/
