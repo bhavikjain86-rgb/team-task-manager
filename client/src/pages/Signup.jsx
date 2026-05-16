@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { FolderKanban } from 'lucide-react';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -15,82 +16,79 @@ const Signup = () => {
     try {
       await register(name, email, password, role);
       navigate('/dashboard');
-    } catch (err) {
-      // Error handled by context via toast
-    }
+    } catch (err) {}
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-violet-600 p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h1>
-            <p className="text-slate-500">Join TaskFlow today</p>
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-app)] p-4">
+      <div className="w-full max-w-[400px] space-y-8">
+        <div className="text-center flex flex-col items-center">
+          <div className="w-12 h-12 bg-[var(--accent-orange)] rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/20 mb-6">
+            <FolderKanban className="text-white w-7 h-7" />
           </div>
+          <h1 className="text-[28px] font-bold text-white tracking-tight">Join TaskFlow</h1>
+          <p className="text-[var(--text-muted)] mt-2">Start managing your professional workforce</p>
+        </div>
 
+        <div className="card-base card-understand p-8 border border-[var(--border-dark)]">
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">Full Name</label>
               <input
                 type="text"
                 required
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
-                placeholder="John Doe"
+                className="w-full px-4 py-3 bg-[var(--bg-app)] border border-[var(--border-dark)] rounded-xl focus:border-[var(--accent-orange)] outline-none text-white text-sm"
+                placeholder="Marcus Aurelius"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">Email Address</label>
               <input
                 type="email"
                 required
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
-                placeholder="you@example.com"
+                className="w-full px-4 py-3 bg-[var(--bg-app)] border border-[var(--border-dark)] rounded-xl focus:border-[var(--accent-orange)] outline-none text-white text-sm"
+                placeholder="name@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">Password</label>
               <input
                 type="password"
                 required
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
+                className="w-full px-4 py-3 bg-[var(--bg-app)] border border-[var(--border-dark)] rounded-xl focus:border-[var(--accent-orange)] outline-none text-white text-sm"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
+            <div className="space-y-1.5 pb-2">
+              <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-1">Role</label>
               <select
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors bg-white"
+                className="w-full px-4 py-3 bg-[var(--bg-app)] border border-[var(--border-dark)] rounded-xl focus:border-[var(--accent-orange)] outline-none text-white text-sm appearance-none cursor-pointer"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               >
-                <option value="MEMBER">Member</option>
-                <option value="ADMIN">Admin</option>
+                <option value="MEMBER">Standard Member</option>
+                <option value="ADMIN">System Admin</option>
               </select>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
-            >
-              Sign Up
+            <button type="submit" className="btn-primary w-full py-3.5 text-sm uppercase tracking-widest font-black">
+              Create Account
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-slate-600">
-            Already have an account?{' '}
-            <Link to="/login" className="text-indigo-600 font-semibold hover:underline">
-              Sign in
-            </Link>
+          <div className="mt-8 text-center">
+            <p className="text-[13px] text-[var(--text-muted)]">
+              Already a member? <Link to="/login" className="text-white font-bold hover:text-[var(--accent-orange)] transition-colors">Sign in</Link>
+            </p>
           </div>
         </div>
       </div>

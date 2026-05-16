@@ -2,244 +2,223 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import { 
-  FolderOpen, 
-  ListTodo, 
-  CheckCircle2, 
-  AlertCircle, 
-  Clock,
-  ArrowUpRight,
-  ChevronRight,
-  TrendingUp
-} from 'lucide-react';
-import { 
-  PieChart, 
-  Pie, 
-  Cell, 
-  ResponsiveContainer, 
-  Legend, 
-  Tooltip,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis
+  BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Line, ComposedChart, Cell
 } from 'recharts';
+import { ChevronRight, Filter, ChevronDown, BarChart3, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { format } from 'date-fns';
-
-const StatCard = ({ title, value, icon: Icon, color, trend }) => (
-  <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-md hover:border-indigo-100 transition-all group overflow-hidden relative">
-    <div className={`absolute top-0 right-0 w-32 h-32 -mr-16 -mt-16 rounded-full opacity-[0.03] transition-transform group-hover:scale-110`} style={{ backgroundColor: color }} />
-    
-    <div className="flex justify-between items-start relative z-10">
-      <div className={`p-3 rounded-2xl border`} style={{ backgroundColor: `${color}10`, color: color, borderColor: `${color}20` }}>
-        <Icon className="w-6 h-6" strokeWidth={2.5} />
-      </div>
-      {trend && (
-        <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-100/50 border border-emerald-200/50 px-2.5 py-1 rounded-xl">
-          <ArrowUpRight className="w-3 h-3" strokeWidth={3} />
-          {trend}%
-        </div>
-      )}
-    </div>
-    
-    <div className="mt-5 relative z-10">
-      <h3 className="text-sm font-medium text-slate-500">{title}</h3>
-      <div className="flex items-baseline gap-2 mt-1">
-        <span className="text-3xl font-display font-extrabold text-slate-900 tracking-tight">{value}</span>
-      </div>
-    </div>
-  </div>
-);
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [activities, setActivities] = useState([]);
-  const [overdue, setOverdue] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchData = async () => {
       try {
-        const [statsRes, activityRes, overdueRes] = await Promise.all([
+        const [statsRes, activityRes, tasksRes] = await Promise.all([
           api.get('/dashboard/stats'),
           api.get('/dashboard/activity'),
-          api.get('/dashboard/overdue')
+          api.get('/projects') // Using projects/tasks for the "Report" card mock
         ]);
         setStats(statsRes.data);
         setActivities(activityRes.data);
-        setOverdue(overdueRes.data);
+        // Getting some real tasks for the "Check" card
+        const projects = tasksRes.data;
+        if (projects.length > 0) {
+          const detailRes = await api.get(`/projects/${projects[0].id}`);
+          setTasks(detailRes.data.tasks.slice(0, 5));
+        }
       } catch (error) {
-        console.error('Dashboard fetch error:', error);
-        toast.error('Failed to load dashboard data');
+        toast.error('Failed to load dashboard');
       } finally {
         setLoading(false);
       }
     };
-    fetchDashboardData();
+    fetchData();
   }, []);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
+  const chartData = [
+    { name: 'Jan', val: 200 }, { name: 'Feb', val: 350 }, { name: 'Mar', val: -100 },
+    { name: 'Apr', val: 400 }, { name: 'May', val: 150 }, { name: 'Jun', val: 450 },
+    { name: 'Jul', val: 300 }, { name: 'Aug', val: 100 }, { name: 'Sep', val: -50 },
+    { name: 'Oct', val: 200 }, { name: 'Nov', val: 400 }, { name: 'Dec', val: 300 },
+  ];
 
-  const chartData = stats ? [
-    { name: 'Todo', value: stats.todoTasks, color: '#64748B' },
-    { name: 'In Progress', value: stats.inProgressTasks, color: '#D97706' },
-    { name: 'Done', value: stats.doneTasks, color: '#008542' }
-  ] : [];
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-pulse">
-        {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-white rounded-3xl border border-slate-100" />)}
-        <div className="md:col-span-2 h-[400px] bg-white rounded-3xl border border-slate-100" />
-        <div className="md:col-span-2 h-[400px] bg-white rounded-3xl border border-slate-100" />
-      </div>
-    );
-  }
+  if (loading) return <div className="p-8 text-white">Initializing system...</div>;
 
   return (
-    <div className="space-y-8 pb-10">
-      {/* Header */}
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl font-display font-extrabold text-slate-900 tracking-tight">
-            {getGreeting()}, {user?.name.split(' ')[0]}
-          </h1>
-          <p className="text-slate-500 mt-2 font-medium">Here's what's happening with your projects today.</p>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
+      
+      {/* TOP LEFT - "Check" Card (Cream) */}
+      <div className="card-base card-check flex flex-col">
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-[15px] font-semibold uppercase tracking-tight">Check</h2>
+          <div className="flex-1 h-1.5 bg-black/10 rounded-full overflow-hidden">
+            <div className="bg-[var(--accent-green)] h-full w-[99%]" />
+          </div>
+          <span className="text-xs font-bold text-[var(--accent-green)]">99% Complete</span>
         </div>
-        <div className="hidden lg:flex items-center gap-3 bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
-          <div className="px-4 py-2 text-sm font-bold text-slate-900">Today</div>
-          <div className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-slate-600 cursor-pointer">Week</div>
-          <div className="px-4 py-2 text-sm font-medium text-slate-400 hover:text-slate-600 cursor-pointer">Month</div>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Projects" value={stats?.totalProjects} icon={FolderOpen} color="#6366f1" trend={12} />
-        <StatCard title="My Active Tasks" value={stats?.myTasks} icon={ListTodo} color="#0EA5E9" trend={5} />
-        <StatCard title="Completed" value={stats?.completedProjects} icon={CheckCircle2} color="#008542" />
-        <StatCard title="Overdue Tasks" value={stats?.overdueTasks} icon={AlertCircle} color="#EF4444" />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left: Task Distribution */}
-        <div className="lg:col-span-5 bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 flex flex-col">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-display font-bold text-slate-900">Task Status Distribution</h2>
-            <TrendingUp className="w-5 h-5 text-emerald-500" />
-          </div>
-          <div className="flex-1 min-h-[250px] relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={70}
-                  outerRadius={100}
-                  paddingAngle={8}
-                  dataKey="value"
-                >
-                  {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                  itemStyle={{ fontWeight: 'bold' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            {chartData.map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center p-3 rounded-2xl bg-slate-50 border border-slate-100 transition-transform hover:scale-105">
-                <div className="w-2 h-2 rounded-full mb-2" style={{ backgroundColor: item.color }} />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{item.name}</span>
-                <span className="text-lg font-display font-extrabold text-slate-900 leading-none mt-1">{item.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Middle: Recent Activity */}
-        <div className="lg:col-span-7 bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-display font-bold text-slate-900">Recent Activity</h2>
-            <button className="text-xs font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 group">
-              View all <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-          <div className="space-y-6 max-h-[420px] overflow-y-auto pr-4 custom-scrollbar">
-            {activities.length > 0 ? activities.map((activity, idx) => (
-              <div key={activity.id} className="flex gap-4 group">
-                <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 font-bold text-sm border border-slate-200 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
-                    {activity.user.name.charAt(0).toUpperCase()}
-                  </div>
-                  {idx !== activities.length - 1 && <div className="w-px h-full bg-slate-100 mt-2" />}
+        <div className="space-y-4">
+          {tasks.map((task, i) => (
+            <div key={task.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-5 h-5 rounded flex items-center justify-center border ${i < 3 ? 'bg-[var(--accent-green)] border-[var(--accent-green)]' : 'bg-[#D4C9B0] border-[#D4C9B0]'}`}>
+                  {i < 3 && <div className="w-2.5 h-1.5 border-l-2 border-b-2 border-white -rotate-45 mb-0.5" />}
                 </div>
-                <div className="flex-1 pb-6">
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    <span className="font-bold text-slate-900">{activity.user.name}</span> {activity.action.toLowerCase().replace(/_/g, ' ')}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-1.5 flex items-center gap-1.5 font-medium">
-                    <Clock className="w-3 h-3" />
-                    {format(new Date(activity.createdAt), 'MMM d, h:mm a')}
-                  </p>
+                <span className={`text-[13px] font-medium ${i < 3 ? 'task-done-light' : ''}`}>
+                  {task.title}
+                </span>
+              </div>
+              <div className="w-7 h-7 rounded-full bg-slate-200 border-2 border-white shrink-0 overflow-hidden">
+                <div className="w-full h-full bg-indigo-200 flex items-center justify-center text-[10px] font-bold text-indigo-700">
+                  {task.assignee?.name.charAt(0) || 'U'}
                 </div>
               </div>
-            )) : (
-              <div className="text-center py-10">
-                <p className="text-slate-400 text-sm italic">No recent activity.</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom: Overdue Panel */}
-      <div className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 overflow-hidden relative">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-rose-50 rounded-xl text-rose-500">
-              <AlertCircle className="w-5 h-5" />
             </div>
-            <h2 className="text-xl font-display font-bold text-slate-900">Overdue Tasks</h2>
-          </div>
-          <span className="text-xs font-bold bg-rose-100 text-rose-700 px-3 py-1 rounded-full uppercase tracking-wider">Attention Required</span>
+          ))}
+        </div>
+      </div>
+
+      {/* TOP RIGHT - "Report" Card (Orange) */}
+      <div className="card-base card-report flex flex-col">
+        <h2 className="text-[15px] font-semibold uppercase tracking-tight mb-6">Report</h2>
+        <div className="space-y-0">
+          {[1, 2, 3].map((_, i) => (
+            <div key={i} className={`py-4 flex items-center justify-between ${i !== 0 ? 'border-t border-white/20' : ''}`}>
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  {[1, 2].map(j => (
+                    <div key={j} className="w-7 h-7 rounded-full bg-white/20 border-2 border-[#F4622A] flex items-center justify-center text-[10px] font-bold">
+                      {String.fromCharCode(65 + j + i)}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  {i === 0 ? <span className="badge-in-progress">In Progress</span> : i === 1 ? <span className="badge-realistic">Realistic</span> : <span className="badge-complete">Complete</span>}
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/60" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* BOTTOM LEFT - "Understand" Card (Dark) */}
+      <div className="card-base card-understand lg:col-span-1">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-[15px] font-semibold uppercase tracking-tight">Understand</h2>
+          <span className="text-[12px] text-[var(--text-muted)]">Time Entry Week</span>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {overdue.length > 0 ? overdue.map(task => (
-            <div key={task.id} className="p-5 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <div className="flex justify-between items-start mb-3">
-                <span className="text-[10px] font-bold text-rose-600 uppercase tracking-widest bg-rose-50 px-2 py-0.5 rounded-md">High Priority</span>
-                <span className="text-[10px] font-bold text-slate-400">{format(new Date(task.dueDate), 'MMM d')}</span>
-              </div>
-              <h4 className="font-bold text-slate-900 line-clamp-1">{task.title}</h4>
-              <p className="text-xs text-slate-500 mt-1 font-medium">{task.project.name}</p>
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-200/50">
-                <div className="w-6 h-6 rounded-lg bg-indigo-100 flex items-center justify-center text-[10px] font-bold text-indigo-700">
-                  {task.assignee?.name.charAt(0) || '?'}
-                </div>
-                <span className="text-[10px] font-bold text-slate-600 truncate">{task.assignee?.name || 'Unassigned'}</span>
-              </div>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-[var(--bg-card-orange)] rounded-[16px] p-4">
+            <div className="text-[28px] font-bold leading-tight">3,458</div>
+            <div className="text-[12px] font-medium text-white/80">Contract Hours</div>
+          </div>
+          <div className="bg-[var(--bg-card-orange)] rounded-[16px] p-4">
+            <div className="text-[28px] font-bold leading-tight">1,059</div>
+            <div className="text-[12px] font-medium text-white/80">Client Hours</div>
+          </div>
+          <div className="bg-[var(--accent-tan)] rounded-[16px] p-4 text-[var(--text-dark)]">
+            <div className="text-[28px] font-bold leading-tight">30.62%</div>
+            <div className="text-[12px] font-medium text-black/60">Utilization</div>
+          </div>
+        </div>
+
+        <div className="flex gap-2 mb-6">
+          <button className="btn-pill-dark text-xs py-1 px-3">
+            <span>Filter</span>
+            <ChevronDown className="w-3 h-3" />
+          </button>
+          <button className="btn-pill-dark text-xs py-1 px-3">
+            <span>Employee</span>
+            <ChevronDown className="w-3 h-3" />
+          </button>
+        </div>
+
+        <table className="custom-table">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Contract</th>
+              <th>Client</th>
+              <th>Intern</th>
+              <th>Leave</th>
+              <th>Overtime</th>
+            </tr>
+          </thead>
+          <tbody>
+            {activities.slice(0, 4).map((act, i) => (
+              <tr key={act.id}>
+                <td className="flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-white/10 text-[10px] flex items-center justify-center font-bold">
+                    {act.user.name.charAt(0)}
+                  </div>
+                  <span>{act.user.name.split(' ')[0]}</span>
+                </td>
+                <td>{i % 2 === 0 ? '40.0' : '37.5'}</td>
+                <td>{i % 3 === 0 ? '—' : '22.0'}</td>
+                <td>—</td>
+                <td>{i === 2 ? '8.0' : '—'}</td>
+                <td>—</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* BOTTOM RIGHT - "Plan" Card (Yellow) */}
+      <div className="card-base card-plan flex flex-col">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-[15px] font-semibold uppercase tracking-tight">Plan</h2>
+          <div className="flex items-center gap-2">
+            <div className="flex bg-black/5 p-1 rounded-full">
+              <button className="px-3 py-1 text-[11px] font-bold rounded-full bg-[var(--text-dark)] text-white">Optimistic</button>
+              <button className="px-3 py-1 text-[11px] font-bold rounded-full text-[var(--text-dark)]">Realistic</button>
             </div>
-          )) : (
-            <div className="col-span-full py-12 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-200">
-              <CheckCircle2 className="w-10 h-10 text-emerald-300 mx-auto mb-3" />
-              <p className="text-slate-500 font-medium">Excellent! No overdue tasks.</p>
-            </div>
-          )}
+            <button className="btn-pill-dark text-xs px-4">
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Analyze</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 min-h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={chartData}>
+              <XAxis 
+                dataKey="name" 
+                axisLine={false} 
+                tickLine={false} 
+                dy={10}
+              />
+              <YAxis 
+                axisLine={false} 
+                tickLine={false}
+                tickFormatter={(v) => v === 0 ? '0' : `${v}K`}
+              />
+              <Bar dataKey="val" radius={[4, 4, 0, 0]}>
+                {chartData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.name === 'Jun' ? '#000000' : (index % 2 === 0 ? '#FFFFFF' : '#F4622A')} 
+                  />
+                ))}
+              </Bar>
+              <Line 
+                type="monotone" 
+                dataKey="val" 
+                stroke="#1A1A1A" 
+                strokeWidth={2} 
+                dot={false} 
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
         </div>
       </div>
+
     </div>
   );
 };

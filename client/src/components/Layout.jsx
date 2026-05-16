@@ -6,21 +6,22 @@ import {
   FolderKanban, 
   Users, 
   LogOut, 
-  Bell, 
   Settings,
-  Search,
-  HelpCircle
+  ChevronDown,
+  RefreshCw,
+  BarChart3
 } from 'lucide-react';
 
-const SidebarLink = ({ to, icon: Icon, label }) => (
+const SidebarIcon = ({ to, icon: Icon }) => (
   <NavLink
     to={to}
     className={({ isActive }) => 
-      isActive ? 'nav-link-active' : 'nav-link'
+      `w-12 h-12 flex items-center justify-center rounded-xl transition-all ${
+        isActive ? 'text-white' : 'text-[#555555] hover:text-white'
+      }`
     }
   >
-    <Icon className="w-[22px] h-[22px]" strokeWidth={2.5} />
-    <span className="text-[13px] font-bold tracking-tight">{label}</span>
+    <Icon className="w-6 h-6" />
   </NavLink>
 );
 
@@ -34,72 +35,51 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      {/* Sidebar - Desktop */}
-      <aside className="hidden md:flex flex-col w-72 bg-[#0F172A] border-r border-slate-800 p-6">
-        <div className="flex items-center gap-3 mb-10 px-2">
-          <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/40 rotate-3">
-            <FolderKanban className="text-white w-6 h-6" strokeWidth={3} />
-          </div>
-          <span className="text-2xl font-display font-black text-white tracking-tighter">TaskFlow</span>
+    <div className="flex h-screen bg-[var(--bg-app)]">
+      {/* Sidebar - Icons Only */}
+      <aside className="w-[60px] bg-[var(--bg-sidebar)] flex flex-col items-center py-6 border-r border-[var(--border-dark)] shrink-0">
+        <div className="mb-10 text-[var(--accent-orange)]">
+          <FolderKanban className="w-8 h-8 fill-current" />
         </div>
 
-        <nav className="flex-1 space-y-3">
-          <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
-          <SidebarLink to="/projects" icon={FolderKanban} label="Projects" />
-          {isAdmin && <SidebarLink to="/team" icon={Users} label="Workspace" />}
+        <nav className="flex-1 space-y-4">
+          <SidebarIcon to="/dashboard" icon={LayoutDashboard} />
+          <SidebarIcon to="/projects" icon={FolderKanban} />
+          {isAdmin && <SidebarIcon to="/team" icon={Users} />}
         </nav>
 
-        <div className="pt-8 border-t border-slate-800/50 space-y-2">
-          <button className="nav-link w-full group">
-            <Settings className="w-5 h-5 group-hover:rotate-45 transition-transform duration-500" strokeWidth={2.5} />
-            <span className="text-[13px] font-bold">Settings</span>
+        <div className="space-y-4">
+          <button className="w-12 h-12 flex items-center justify-center text-[#555555] hover:text-white transition-all">
+            <Settings className="w-6 h-6" />
           </button>
-          <button onClick={handleLogout} className="nav-link w-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
-            <LogOut className="w-5 h-5" strokeWidth={2.5} />
-            <span className="text-[13px] font-bold">Sign Out</span>
+          <button onClick={handleLogout} className="w-12 h-12 flex items-center justify-center text-[#555555] hover:text-rose-500 transition-all">
+            <LogOut className="w-6 h-6" />
           </button>
-        </div>
-
-        <div className="mt-8 p-4 bg-slate-800/50 rounded-2xl border border-white/5">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20">
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
-              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{user?.role}</p>
-            </div>
-          </div>
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-between z-10 shrink-0">
-          <div className="flex items-center gap-4 flex-1 max-w-xl">
-            <div className="relative w-full max-w-sm group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-              <input 
-                type="text" 
-                placeholder="Search projects, tasks, or members..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
-              />
-            </div>
+        <header className="h-16 bg-[var(--bg-app)] px-8 flex items-center justify-between z-10 shrink-0">
+          <div className="flex items-center gap-4">
+            <button className="btn-pill-dark">
+              <span>May 2026</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <button className="btn-pill-dark">
+              <BarChart3 className="w-4 h-4" />
+              <span>Edit View</span>
+            </button>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+            <button className="btn-pill-white">
+              <RefreshCw className="w-4 h-4" />
+              <span className="font-bold">Refresh</span>
             </button>
-            <button className="p-2.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">
-              <HelpCircle className="w-5 h-5" />
-            </button>
-            <div className="h-8 w-px bg-slate-200 mx-2" />
-            <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 p-0.5">
-              <div className="w-full h-full rounded-[10px] bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
+            <div className="w-8 h-8 rounded-full border border-[var(--border-dark)] overflow-hidden">
+              <div className="w-full h-full bg-[var(--accent-orange)] flex items-center justify-center text-white font-bold text-xs">
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -107,33 +87,11 @@ const Layout = () => {
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-8 scroll-smooth">
-          <div className="max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+          <div className="max-w-[1400px] mx-auto">
             <Outlet />
           </div>
         </div>
-
-        {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden h-16 bg-white border-t border-slate-200 flex items-center justify-around px-2 shrink-0">
-          <NavLink to="/dashboard" className={({ isActive }) => `flex flex-col items-center gap-1 p-2 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
-            <LayoutDashboard className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Dashboard</span>
-          </NavLink>
-          <NavLink to="/projects" className={({ isActive }) => `flex flex-col items-center gap-1 p-2 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
-            <FolderKanban className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Projects</span>
-          </NavLink>
-          {isAdmin && (
-            <NavLink to="/team" className={({ isActive }) => `flex flex-col items-center gap-1 p-2 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
-              <Users className="w-5 h-5" />
-              <span className="text-[10px] font-bold">Team</span>
-            </NavLink>
-          )}
-          <button onClick={handleLogout} className="flex flex-col items-center gap-1 p-2 text-slate-400">
-            <LogOut className="w-5 h-5" />
-            <span className="text-[10px] font-bold">Exit</span>
-          </button>
-        </nav>
       </main>
     </div>
   );
