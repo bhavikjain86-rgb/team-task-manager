@@ -35,7 +35,7 @@ const MemberSidePanel = ({ member, onClose, projects }) => {
       <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
         <div className="flex flex-col items-center text-center">
           <div className="w-24 h-24 rounded-[32px] bg-accent-orange/10 flex items-center justify-center text-accent-orange font-black text-4xl mb-4 border-2 border-accent-orange/20">
-            {member.name.charAt(0)}
+            {member?.name?.charAt(0) || '?'}
           </div>
           <h2 className="text-2xl font-black text-white tracking-tight">{member.name}</h2>
           <div className="flex items-center gap-2 mt-2">
@@ -138,7 +138,7 @@ const Team = () => {
               return (
                 <div key={u.id} className="bg-white/[0.02] p-4 rounded-2xl border border-white/5">
                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-8 h-8 rounded-lg bg-accent-orange/10 flex items-center justify-center text-accent-orange font-bold text-xs uppercase">{u.name.charAt(0)}</div>
+                      <div className="w-8 h-8 rounded-lg bg-accent-orange/10 flex items-center justify-center text-accent-orange font-bold text-xs uppercase">{u.name?.charAt(0) || '?'}</div>
                       <span className="text-xs font-bold text-white truncate">{u.name.split(' ')[0]}</span>
                    </div>
                    <div className="flex justify-between text-[9px] font-black uppercase tracking-widest mb-1.5">
@@ -198,7 +198,7 @@ const Team = () => {
                 >
                   <td className="px-6 py-4 flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-accent-orange/10 flex items-center justify-center text-accent-orange font-black text-sm uppercase">
-                      {u.name.charAt(0)}
+                      {u.name?.charAt(0) || '?'}
                     </div>
                     <div>
                       <span className="font-bold text-sm text-white block">{u.name}</span>

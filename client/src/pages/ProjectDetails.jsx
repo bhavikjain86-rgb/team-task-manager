@@ -153,11 +153,11 @@ const TaskModal = ({ task: initialTask, onClose, onUpdate, onDelete }) => {
                    {task.comments?.map(c => (
                      <div key={c.id} className="flex gap-4 group">
                         <div className="w-8 h-8 rounded-full bg-accent-orange/10 flex items-center justify-center text-accent-orange font-bold text-xs uppercase">
-                           {c.user?.name.charAt(0)}
+                           {c.author?.name?.charAt(0) || '?'}
                         </div>
                         <div className="flex-1 bg-white/[0.03] rounded-2xl p-4 border border-white/5">
                            <div className="flex justify-between items-center mb-1">
-                              <span className="text-xs font-bold text-white">{c.user?.name}</span>
+                              <span className="text-xs font-bold text-white">{c.author?.name || 'Unknown'}</span>
                               <span className="text-[10px] text-muted">{timeAgo(c.createdAt)}</span>
                            </div>
                            <p className="text-sm text-white/80 leading-relaxed">{c.content}</p>
@@ -191,7 +191,7 @@ const TaskModal = ({ task: initialTask, onClose, onUpdate, onDelete }) => {
                    <label className="text-[10px] font-black uppercase tracking-widest text-muted">Assignee</label>
                    <div className="flex items-center gap-3 p-3 bg-app rounded-2xl border border-white/5">
                       <div className="w-10 h-10 rounded-full bg-accent-orange/10 flex items-center justify-center text-accent-orange font-black">
-                         {task.assignee?.name.charAt(0).toUpperCase() || '?'}
+                         {task.assignee?.name?.charAt(0).toUpperCase() || '?'}
                       </div>
                       <div className="flex-1 min-w-0">
                          <p className="text-sm font-bold truncate">{task.assignee?.name || 'Unassigned'}</p>
@@ -293,7 +293,7 @@ const TaskCard = ({ task, onClick }) => {
            </div>
         </div>
         <div className="w-6 h-6 rounded-full bg-accent-orange/20 border-2 border-app flex items-center justify-center text-[8px] font-black text-accent-orange uppercase shadow-lg">
-          {task.assignee?.name.charAt(0) || '?'}
+          {task.assignee?.name?.charAt(0) || '?'}
         </div>
       </div>
     </div>
@@ -354,7 +354,7 @@ const ProjectDetails = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <div className="w-12 h-12 rounded-2xl bg-accent-orange flex items-center justify-center text-white font-black text-xl shadow-2xl shadow-orange-950/40">
-              {project.name.charAt(0)}
+              {project?.name?.charAt(0) || '?'}
             </div>
             <div>
               <h1 className="text-2xl font-black text-white leading-tight tracking-tight">{project.name}</h1>

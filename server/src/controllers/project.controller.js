@@ -89,7 +89,11 @@ const getProjectById = async (req, res, next) => {
         tasks: {
           include: {
             assignee: { select: { id: true, name: true } },
-            comments: true
+            comments: {
+              include: {
+                author: { select: { name: true } }
+              }
+            }
           }
         },
         activities: {

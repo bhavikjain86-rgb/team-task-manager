@@ -214,7 +214,7 @@ const Dashboard = () => {
                 <div key={i} className="p-4 border-b border-white/5 last:border-0 hover:bg-white/[0.01] transition-all">
                   <div className="flex gap-3">
                     <div className="w-7 h-7 rounded-full bg-accent-orange/20 flex items-center justify-center text-accent-orange font-bold text-[10px] uppercase shrink-0">
-                      {act.user.name.charAt(0)}
+                      {act.user?.name?.charAt(0) || '?'}
                     </div>
                     <div>
                       <p className="text-xs font-medium leading-snug"><span className="text-white font-bold">{act.user.name}</span> {act.action.toLowerCase().replace(/_/g, ' ')}</p>
@@ -237,7 +237,7 @@ const Dashboard = () => {
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-white truncate pr-2">{task.title}</span>
                     <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[8px] font-bold shrink-0">
-                      {user?.name.charAt(0)}
+                      {user?.name?.charAt(0) || '?'}
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
