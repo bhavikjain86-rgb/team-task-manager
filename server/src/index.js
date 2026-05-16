@@ -44,23 +44,19 @@ app.use((err, req, res, next) => {
 // Serve Frontend
 const clientBuildPath = path.join(__dirname, '../../client/dist');
 const fs = require('fs');
-console.log('Looking for client build at:', clientBuildPath);
-console.log('Client dist exists:', fs.existsSync(clientBuildPath));
+console.log('[TaskFlow] Client dist path:', clientBuildPath);
+console.log('[TaskFlow] Client dist exists:', fs.existsSync(clientBuildPath));
 
-if (fs.existsSync(clientBuildPath)) {
-  app.use(express.static(clientBuildPath));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(clientBuildPath, 'index.html'));
-  });
-} else {
-  app.get('*', (req, res) => {
-    res.status(503).send(`
-      <h2>Build not found</h2>
-      <p>Expected at: ${clientBuildPath}</p>
-      <p>Server working correctly — frontend build step may have failed.</p>
-    `);
-  });
-}
+app.use(express.static(clientBuildPath));
+
+app.use(function (req, res) {
+  const indexPath = path.join(clientBuildPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(503).send('<h2>Frontend not built. dist/index.html missing at: ' + indexPath + '</h2>');
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
