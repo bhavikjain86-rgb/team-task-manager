@@ -54,7 +54,7 @@ const Dashboard = () => {
       <div className="bg-card-light rounded-card p-6 flex flex-col text-app">
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-[15px] font-semibold uppercase tracking-tight">Check</h2>
-          <div className="flex-1 h-1.5 bg-black/10 rounded-full overflow-hidden">
+          <div className="flex-1 h-1.5 bg-[#622B141a] rounded-full overflow-hidden">
             <div className="bg-accent-green h-full w-[99%]" />
           </div>
           <span className="text-xs font-bold text-accent-green">99% Complete</span>
@@ -63,15 +63,15 @@ const Dashboard = () => {
           {tasks.map((task, i) => (
             <div key={task.id} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded flex items-center justify-center border ${i < 3 ? 'bg-accent-green border-accent-green' : 'bg-[#D4C9B0] border-[#D4C9B0]'}`}>
+                <div className={`w-5 h-5 rounded flex items-center justify-center border ${i < 3 ? 'bg-accent-green border-accent-green' : 'bg-[#C4B99A] border-[#C4B99A]'}`}>
                   {i < 3 && <div className="w-2.5 h-1.5 border-l-2 border-b-2 border-white -rotate-45 mb-0.5" />}
                 </div>
-                <span className={`text-[13px] font-medium ${i < 3 ? 'line-through text-muted' : 'text-app'}`}>
+                <span className={`text-[13px] font-medium ${i < 3 ? 'line-through opacity-40' : ''}`}>
                   {task.title}
                 </span>
               </div>
-              <div className="w-7 h-7 rounded-full bg-slate-200 border-2 border-white shrink-0 overflow-hidden">
-                <div className="w-full h-full bg-indigo-200 flex items-center justify-center text-[10px] font-bold text-indigo-700">
+              <div className="w-7 h-7 rounded-full bg-app/10 border-2 border-white shrink-0 overflow-hidden">
+                <div className="w-full h-full bg-[#995F2F] flex items-center justify-center text-[10px] font-bold text-white">
                   {task.assignee?.name.charAt(0) || 'U'}
                 </div>
               </div>
@@ -118,17 +118,17 @@ const Dashboard = () => {
         </div>
         
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-accent-orange rounded-block p-4">
+          <div className="bg-app/40 rounded-block p-4 border border-white/5">
             <div className="text-[28px] font-bold leading-tight">3,458</div>
             <div className="text-[12px] font-medium text-white/80">Contract Hours</div>
           </div>
-          <div className="bg-accent-orange rounded-block p-4">
+          <div className="bg-app/40 rounded-block p-4 border border-white/5">
             <div className="text-[28px] font-bold leading-tight">1,059</div>
             <div className="text-[12px] font-medium text-white/80">Client Hours</div>
           </div>
-          <div className="bg-accent-tan rounded-block p-4 text-app">
+          <div className="bg-card-light rounded-block p-4 text-app">
             <div className="text-[28px] font-bold leading-tight">30.62%</div>
-            <div className="text-[12px] font-medium text-black/60">Utilization</div>
+            <div className="text-[12px] font-medium text-app/60">Utilization</div>
           </div>
         </div>
 

@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --bg-app: #1A1A1A;
-  --bg-sidebar: #111111;
-  --bg-card-dark: #222222;
-  --bg-card-light: #F5F0E8;
-  --bg-card-orange: #F4622A;
-  --bg-card-yellow: #F5C842;
-  --accent-orange: #F4622A;
+  --bg-app: #622B14;
+  --bg-sidebar: #4A1E0D;
+  --bg-card-dark: #995F2F;
+  --bg-card-light: #E4D6A9;
+  --bg-card-orange: #995F2F;
+  --bg-card-yellow: #978F66;
+  --accent-orange: #995F2F;
   --accent-green: #4CAF50;
-  --accent-tan: #C4B99A;
+  --accent-tan: #978F66;
   --text-primary: #FFFFFF;
-  --text-dark: #1A1A1A;
-  --text-muted: #888888;
+  --text-dark: #622B14;
+  --text-muted: #E4D6A9CC;
   --border-dark: rgba(255,255,255,0.08);
-  --border-light: rgba(0,0,0,0.08);
+  --border-light: rgba(98,43,20,0.08);
   --radius-card: 20px;
   --radius-block: 16px;
   --radius-pill: 999px;
@@ -24,77 +24,17 @@
 
 @layer base {
   body {
-    @apply bg-[var(--bg-app)] text-[var(--text-primary)] antialiased font-sans;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold;
+    @apply bg-app text-white antialiased font-sans;
   }
 }
 
 @layer components {
-  /* Cards */
-  .card-base {
-    @apply rounded-[var(--radius-card)] overflow-hidden;
-  }
-  
-  .card-check {
-    @apply bg-[var(--bg-card-light)] text-[var(--text-dark)] p-6;
-  }
-  
-  .card-report {
-    @apply bg-[var(--bg-card-orange)] text-[var(--text-primary)] p-6;
-  }
-  
-  .card-understand {
-    @apply bg-[var(--bg-card-dark)] text-[var(--text-primary)] p-6;
-  }
-  
-  .card-plan {
-    @apply bg-[var(--bg-card-yellow)] text-[var(--text-dark)] p-6;
-  }
-
-  /* Buttons */
-  .btn-primary {
-    @apply bg-[var(--accent-orange)] text-white font-semibold py-2 px-4 rounded-[12px] hover:brightness-110 transition-all;
-  }
-  
   .btn-pill-dark {
-    @apply bg-[#2A2A2A] text-white font-medium py-1.5 px-4 rounded-[var(--radius-pill)] hover:bg-[#333] transition-all flex items-center gap-2;
-  }
-  
-  .btn-pill-white {
-    @apply bg-white text-[var(--text-dark)] font-medium py-1.5 px-4 rounded-[var(--radius-pill)] hover:bg-slate-100 transition-all flex items-center gap-2;
-  }
-
-  /* Badges */
-  .badge-in-progress {
-    @apply bg-[var(--text-dark)] text-white text-[11px] font-medium px-3 py-1 rounded-[var(--radius-pill)];
-  }
-  
-  .badge-complete {
-    @apply bg-[var(--accent-green)] text-white text-[11px] font-medium px-3 py-1 rounded-[var(--radius-pill)];
-  }
-  
-  .badge-realistic {
-    @apply bg-white text-[var(--text-dark)] text-[11px] font-medium px-3 py-1 rounded-[var(--radius-pill)] border border-[var(--border-light)];
-  }
-
-  /* Tables */
-  .custom-table {
-    @apply w-full text-[13px] border-collapse;
-  }
-  
-  .custom-table th {
-    @apply text-[var(--text-muted)] font-normal text-left pb-4 px-2;
-  }
-  
-  .custom-table td {
-    @apply py-3 px-2 border-t border-[var(--border-dark)];
+    @apply bg-[#4A1E0D] text-white font-medium py-1.5 px-4 rounded-[var(--radius-pill)] hover:bg-[#5A2E1D] transition-all flex items-center gap-2;
   }
 }
 
-/* Custom Scrollbar for dark theme */
+/* Custom Scrollbar for warm theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -108,12 +48,6 @@
   @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
 }
 
-/* Specific Strikethrough for light cards */
-.task-done-light {
-  @apply line-through text-[#999999];
-}
-
-/* Recharts Customization */
 .recharts-cartesian-axis-tick text {
-  @apply fill-[var(--text-dark)] text-[11px] font-medium;
+  @apply fill-app text-[11px] font-medium;
 }

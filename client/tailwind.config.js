@@ -7,20 +7,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        app: '#1A1A1A',
-        sidebar: '#111111',
+        app: '#622B14',
+        sidebar: '#4A1E0D',
         card: {
-          dark: '#222222',
-          light: '#F5F0E8',
-          orange: '#F4622A',
-          yellow: '#F5C842',
+          dark: '#995F2F',
+          light: '#E4D6A9',
+          orange: '#995F2F',
+          yellow: '#978F66',
         },
         accent: {
-          orange: '#F4622A',
+          orange: '#995F2F',
           green: '#4CAF50',
-          tan: '#C4B99A',
+          tan: '#978F66',
         },
-        muted: '#888888',
+        muted: '#E4D6A999',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
