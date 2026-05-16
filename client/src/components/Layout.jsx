@@ -19,8 +19,8 @@ const SidebarLink = ({ to, icon: Icon, label }) => (
       isActive ? 'nav-link-active' : 'nav-link'
     }
   >
-    <Icon className="w-5 h-5" />
-    <span className="text-sm">{label}</span>
+    <Icon className="w-[22px] h-[22px]" strokeWidth={2.5} />
+    <span className="text-[13px] font-bold tracking-tight">{label}</span>
   </NavLink>
 );
 
@@ -38,26 +38,26 @@ const Layout = () => {
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-72 bg-[#0F172A] border-r border-slate-800 p-6">
         <div className="flex items-center gap-3 mb-10 px-2">
-          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <FolderKanban className="text-white w-5 h-5" />
+          <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-500/40 rotate-3">
+            <FolderKanban className="text-white w-6 h-6" strokeWidth={3} />
           </div>
-          <span className="text-xl font-display font-extrabold text-white tracking-tight">TaskFlow</span>
+          <span className="text-2xl font-display font-black text-white tracking-tighter">TaskFlow</span>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-3">
           <SidebarLink to="/dashboard" icon={LayoutDashboard} label="Dashboard" />
           <SidebarLink to="/projects" icon={FolderKanban} label="Projects" />
-          {isAdmin && <SidebarLink to="/team" icon={Users} label="Team Management" />}
+          {isAdmin && <SidebarLink to="/team" icon={Users} label="Workspace" />}
         </nav>
 
-        <div className="pt-6 border-t border-slate-800 space-y-1">
-          <button className="nav-link w-full">
-            <Settings className="w-5 h-5" />
-            <span className="text-sm">Settings</span>
+        <div className="pt-8 border-t border-slate-800/50 space-y-2">
+          <button className="nav-link w-full group">
+            <Settings className="w-5 h-5 group-hover:rotate-45 transition-transform duration-500" strokeWidth={2.5} />
+            <span className="text-[13px] font-bold">Settings</span>
           </button>
           <button onClick={handleLogout} className="nav-link w-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
-            <LogOut className="w-5 h-5" />
-            <span className="text-sm">Logout</span>
+            <LogOut className="w-5 h-5" strokeWidth={2.5} />
+            <span className="text-[13px] font-bold">Sign Out</span>
           </button>
         </div>
 

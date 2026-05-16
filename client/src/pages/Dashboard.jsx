@@ -31,12 +31,12 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => (
     <div className={`absolute top-0 right-0 w-32 h-32 -mr-16 -mt-16 rounded-full opacity-[0.03] transition-transform group-hover:scale-110`} style={{ backgroundColor: color }} />
     
     <div className="flex justify-between items-start relative z-10">
-      <div className={`p-3 rounded-2xl`} style={{ backgroundColor: `${color}10`, color: color }}>
-        <Icon className="w-6 h-6" />
+      <div className={`p-3 rounded-2xl border`} style={{ backgroundColor: `${color}10`, color: color, borderColor: `${color}20` }}>
+        <Icon className="w-6 h-6" strokeWidth={2.5} />
       </div>
       {trend && (
-        <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
-          <ArrowUpRight className="w-3 h-3" />
+        <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-100/50 border border-emerald-200/50 px-2.5 py-1 rounded-xl">
+          <ArrowUpRight className="w-3 h-3" strokeWidth={3} />
           {trend}%
         </div>
       )}
