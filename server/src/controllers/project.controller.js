@@ -52,32 +52,23 @@ const createProject = async (req, res, next) => {
             userId: userId,
             role: 'ADMIN' // Adding creator as ADMIN member
           }
-        },
-        activities: {
-          create: {
-            action: 'PROJECT_CREATED',
-            entityType: 'PROJECT',
-            userId: userId
-          }
         }
       }
     });
 
-    // We also need to update the activity to include the projectId, but it's nested
-    await prisma.activity.updateMany({
-      where: {
-        entityType: 'PROJECT',
-        action: 'PROJECT_CREATED',
-        userId: userId,
-        projectId: null
-      },
+    // Create activity separately to include entityId
+    await prisma.activity.create({
       data: {
+        action: 'PROJECT_CREATED',
+        entityType: 'PROJECT',
+        entityId: project.id,
         projectId: project.id,
-        entityId: project.id
+        userId: userId
       }
     });
 
     res.status(201).json(project);
+
   } catch (error) {
     next(error);
   }
