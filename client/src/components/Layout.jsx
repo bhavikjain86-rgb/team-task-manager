@@ -35,10 +35,10 @@ const Layout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[var(--bg-app)]">
+    <div className="flex h-screen bg-app font-sans text-white">
       {/* Sidebar - Icons Only */}
-      <aside className="w-[60px] bg-[var(--bg-sidebar)] flex flex-col items-center py-6 border-r border-[var(--border-dark)] shrink-0">
-        <div className="mb-10 text-[var(--accent-orange)]">
+      <aside className="w-[60px] bg-sidebar flex flex-col items-center py-6 border-r border-white/5 shrink-0">
+        <div className="mb-10 text-accent-orange">
           <FolderKanban className="w-8 h-8 fill-current" />
         </div>
 
@@ -59,28 +59,28 @@ const Layout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-app">
         {/* Top Header */}
-        <header className="h-16 bg-[var(--bg-app)] px-8 flex items-center justify-between z-10 shrink-0">
+        <header className="h-16 bg-app px-8 flex items-center justify-between z-10 shrink-0">
           <div className="flex items-center gap-4">
-            <button className="btn-pill-dark">
+            <button className="bg-[#2A2A2A] text-white font-medium py-1.5 px-4 rounded-full hover:bg-[#333] transition-all flex items-center gap-2 text-sm">
               <span>May 2026</span>
               <ChevronDown className="w-4 h-4" />
             </button>
-            <button className="btn-pill-dark">
+            <button className="bg-[#2A2A2A] text-white font-medium py-1.5 px-4 rounded-full hover:bg-[#333] transition-all flex items-center gap-2 text-sm">
               <BarChart3 className="w-4 h-4" />
               <span>Edit View</span>
             </button>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="btn-pill-white">
+            <button className="bg-white text-app font-bold py-1.5 px-5 rounded-full hover:bg-slate-100 transition-all flex items-center gap-2 text-sm">
               <RefreshCw className="w-4 h-4" />
-              <span className="font-bold">Refresh</span>
+              <span>Refresh</span>
             </button>
-            <div className="w-8 h-8 rounded-full border border-[var(--border-dark)] overflow-hidden">
-              <div className="w-full h-full bg-[var(--accent-orange)] flex items-center justify-center text-white font-bold text-xs">
-                {user?.name?.charAt(0).toUpperCase()}
+            <div className="w-8 h-8 rounded-full border border-white/10 overflow-hidden">
+              <div className="w-full h-full bg-accent-orange flex items-center justify-center text-white font-bold text-xs uppercase">
+                {user?.name?.charAt(0)}
               </div>
             </div>
           </div>

@@ -20,11 +20,10 @@ const Dashboard = () => {
         const [statsRes, activityRes, tasksRes] = await Promise.all([
           api.get('/dashboard/stats'),
           api.get('/dashboard/activity'),
-          api.get('/projects') // Using projects/tasks for the "Report" card mock
+          api.get('/projects')
         ]);
         setStats(statsRes.data);
         setActivities(activityRes.data);
-        // Getting some real tasks for the "Check" card
         const projects = tasksRes.data;
         if (projects.length > 0) {
           const detailRes = await api.get(`/projects/${projects[0].id}`);
@@ -52,22 +51,22 @@ const Dashboard = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
       
       {/* TOP LEFT - "Check" Card (Cream) */}
-      <div className="card-base card-check flex flex-col">
+      <div className="bg-card-light rounded-card p-6 flex flex-col text-app">
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-[15px] font-semibold uppercase tracking-tight">Check</h2>
           <div className="flex-1 h-1.5 bg-black/10 rounded-full overflow-hidden">
-            <div className="bg-[var(--accent-green)] h-full w-[99%]" />
+            <div className="bg-accent-green h-full w-[99%]" />
           </div>
-          <span className="text-xs font-bold text-[var(--accent-green)]">99% Complete</span>
+          <span className="text-xs font-bold text-accent-green">99% Complete</span>
         </div>
         <div className="space-y-4">
           {tasks.map((task, i) => (
             <div key={task.id} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded flex items-center justify-center border ${i < 3 ? 'bg-[var(--accent-green)] border-[var(--accent-green)]' : 'bg-[#D4C9B0] border-[#D4C9B0]'}`}>
+                <div className={`w-5 h-5 rounded flex items-center justify-center border ${i < 3 ? 'bg-accent-green border-accent-green' : 'bg-[#D4C9B0] border-[#D4C9B0]'}`}>
                   {i < 3 && <div className="w-2.5 h-1.5 border-l-2 border-b-2 border-white -rotate-45 mb-0.5" />}
                 </div>
-                <span className={`text-[13px] font-medium ${i < 3 ? 'task-done-light' : ''}`}>
+                <span className={`text-[13px] font-medium ${i < 3 ? 'line-through text-muted' : 'text-app'}`}>
                   {task.title}
                 </span>
               </div>
@@ -82,7 +81,7 @@ const Dashboard = () => {
       </div>
 
       {/* TOP RIGHT - "Report" Card (Orange) */}
-      <div className="card-base card-report flex flex-col">
+      <div className="bg-card-orange rounded-card p-6 flex flex-col text-white">
         <h2 className="text-[15px] font-semibold uppercase tracking-tight mb-6">Report</h2>
         <div className="space-y-0">
           {[1, 2, 3].map((_, i) => (
@@ -90,13 +89,19 @@ const Dashboard = () => {
               <div className="flex items-center gap-4">
                 <div className="flex -space-x-2">
                   {[1, 2].map(j => (
-                    <div key={j} className="w-7 h-7 rounded-full bg-white/20 border-2 border-[#F4622A] flex items-center justify-center text-[10px] font-bold">
+                    <div key={j} className="w-7 h-7 rounded-full bg-white/20 border-2 border-accent-orange flex items-center justify-center text-[10px] font-bold">
                       {String.fromCharCode(65 + j + i)}
                     </div>
                   ))}
                 </div>
                 <div className="flex gap-2">
-                  {i === 0 ? <span className="badge-in-progress">In Progress</span> : i === 1 ? <span className="badge-realistic">Realistic</span> : <span className="badge-complete">Complete</span>}
+                   {i === 0 ? (
+                     <span className="bg-app text-white text-[11px] font-medium px-3 py-1 rounded-full">In Progress</span>
+                   ) : i === 1 ? (
+                     <span className="bg-white text-app text-[11px] font-medium px-3 py-1 rounded-full border border-black/5">Realistic</span>
+                   ) : (
+                     <span className="bg-accent-green text-white text-[11px] font-medium px-3 py-1 rounded-full">Complete</span>
+                   )}
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-white/60" />
@@ -106,63 +111,63 @@ const Dashboard = () => {
       </div>
 
       {/* BOTTOM LEFT - "Understand" Card (Dark) */}
-      <div className="card-base card-understand lg:col-span-1">
+      <div className="bg-card-dark rounded-card p-6 lg:col-span-1 text-white">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-[15px] font-semibold uppercase tracking-tight">Understand</h2>
-          <span className="text-[12px] text-[var(--text-muted)]">Time Entry Week</span>
+          <h2 className="text-[15px] font-semibold uppercase tracking-tight text-white">Understand</h2>
+          <span className="text-[12px] text-muted">Time Entry Week</span>
         </div>
         
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-[var(--bg-card-orange)] rounded-[16px] p-4">
+          <div className="bg-accent-orange rounded-block p-4">
             <div className="text-[28px] font-bold leading-tight">3,458</div>
             <div className="text-[12px] font-medium text-white/80">Contract Hours</div>
           </div>
-          <div className="bg-[var(--bg-card-orange)] rounded-[16px] p-4">
+          <div className="bg-accent-orange rounded-block p-4">
             <div className="text-[28px] font-bold leading-tight">1,059</div>
             <div className="text-[12px] font-medium text-white/80">Client Hours</div>
           </div>
-          <div className="bg-[var(--accent-tan)] rounded-[16px] p-4 text-[var(--text-dark)]">
+          <div className="bg-accent-tan rounded-block p-4 text-app">
             <div className="text-[28px] font-bold leading-tight">30.62%</div>
             <div className="text-[12px] font-medium text-black/60">Utilization</div>
           </div>
         </div>
 
         <div className="flex gap-2 mb-6">
-          <button className="btn-pill-dark text-xs py-1 px-3">
+          <button className="bg-[#2A2A2A] text-white text-[11px] font-bold py-1.5 px-4 rounded-full flex items-center gap-2">
             <span>Filter</span>
             <ChevronDown className="w-3 h-3" />
           </button>
-          <button className="btn-pill-dark text-xs py-1 px-3">
+          <button className="bg-[#2A2A2A] text-white text-[11px] font-bold py-1.5 px-4 rounded-full flex items-center gap-2">
             <span>Employee</span>
             <ChevronDown className="w-3 h-3" />
           </button>
         </div>
 
-        <table className="custom-table">
+        <table className="w-full text-[13px]">
           <thead>
-            <tr>
-              <th>Employee</th>
-              <th>Contract</th>
-              <th>Client</th>
-              <th>Intern</th>
-              <th>Leave</th>
-              <th>Overtime</th>
+            <tr className="text-muted font-normal">
+              <th className="text-left font-normal pb-4 px-2">Employee</th>
+              <th className="text-left font-normal pb-4 px-2">Contract</th>
+              <th className="text-left font-normal pb-4 px-2">Client</th>
+              <th className="text-left font-normal pb-4 px-2">Intern</th>
+              <th className="text-left font-normal pb-4 px-2">Leave</th>
+              <th className="text-left font-normal pb-4 px-2">Overtime</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-white/5">
             {activities.slice(0, 4).map((act, i) => (
-              <tr key={act.id}>
-                <td className="flex items-center gap-3">
+              <tr key={act.id} className="border-t border-white/5">
+                <td className="py-3 px-2 flex items-center gap-3">
                   <div className="w-7 h-7 rounded-full bg-white/10 text-[10px] flex items-center justify-center font-bold">
                     {act.user.name.charAt(0)}
                   </div>
-                  <span>{act.user.name.split(' ')[0]}</span>
+                  <span className="font-medium text-white">{act.user.name.split(' ')[0]}</span>
                 </td>
-                <td>{i % 2 === 0 ? '40.0' : '37.5'}</td>
-                <td>{i % 3 === 0 ? '—' : '22.0'}</td>
-                <td>—</td>
-                <td>{i === 2 ? '8.0' : '—'}</td>
-                <td>—</td>
+                <td className="py-3 px-2">40.0</td>
+                <td className="py-3 px-2 text-muted">{i % 3 === 0 ? '—' : '22.0'}</td>
+                <td className="py-3 px-2 text-muted">—</td>
+                <td className="py-3 px-2 text-muted">{i === 2 ? '8.0' : '—'}</td>
+                <td className="py-3 px-2 text-muted">—</td>
               </tr>
             ))}
           </tbody>
@@ -170,15 +175,15 @@ const Dashboard = () => {
       </div>
 
       {/* BOTTOM RIGHT - "Plan" Card (Yellow) */}
-      <div className="card-base card-plan flex flex-col">
+      <div className="bg-card-yellow rounded-card p-6 flex flex-col text-app">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-[15px] font-semibold uppercase tracking-tight">Plan</h2>
           <div className="flex items-center gap-2">
             <div className="flex bg-black/5 p-1 rounded-full">
-              <button className="px-3 py-1 text-[11px] font-bold rounded-full bg-[var(--text-dark)] text-white">Optimistic</button>
-              <button className="px-3 py-1 text-[11px] font-bold rounded-full text-[var(--text-dark)]">Realistic</button>
+              <button className="px-3 py-1 text-[11px] font-bold rounded-full bg-app text-white">Optimistic</button>
+              <button className="px-3 py-1 text-[11px] font-bold rounded-full text-app">Realistic</button>
             </div>
-            <button className="btn-pill-dark text-xs px-4">
+            <button className="bg-[#2A2A2A] text-white text-[11px] font-bold py-1.5 px-4 rounded-full flex items-center gap-2">
               <BarChart3 className="w-3.5 h-3.5" />
               <span>Analyze</span>
             </button>
@@ -193,11 +198,13 @@ const Dashboard = () => {
                 axisLine={false} 
                 tickLine={false} 
                 dy={10}
+                tick={{ fill: '#1A1A1A', fontSize: 11, fontWeight: 500 }}
               />
               <YAxis 
                 axisLine={false} 
                 tickLine={false}
                 tickFormatter={(v) => v === 0 ? '0' : `${v}K`}
+                tick={{ fill: '#1A1A1A', fontSize: 11, fontWeight: 500 }}
               />
               <Bar dataKey="val" radius={[4, 4, 0, 0]}>
                 {chartData.map((entry, index) => (
