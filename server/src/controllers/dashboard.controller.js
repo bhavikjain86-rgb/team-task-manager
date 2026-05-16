@@ -107,8 +107,50 @@ const getOverdueTasks = async (req, res, next) => {
   }
 };
 
+const getChartData = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const currentYear = new Date().getFullYear();
+
+    // Get all tasks for the user with a due date in the current year
+    const tasks = await prisma.task.findMany({
+      where: {
+        assigneeId: userId,
+        dueDate: {
+          gte: new Date(currentYear, 0, 1),
+          lte: new Date(currentYear, 11, 31)
+        }
+      },
+      select: {
+        status: true,
+        dueDate: true
+      }
+    });
+
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const chartData = monthNames.map((name, index) => ({
+      name,
+      val: 0,
+      completed: 0
+    }));
+
+    tasks.forEach(task => {
+      const month = new Date(task.dueDate).getMonth();
+      chartData[month].val += 1;
+      if (task.status === 'DONE') {
+        chartData[month].completed += 1;
+      }
+    });
+
+    res.json(chartData);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getStats,
   getActivity,
-  getOverdueTasks
+  getOverdueTasks,
+  getChartData
 };

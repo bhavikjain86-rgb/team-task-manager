@@ -7,10 +7,10 @@ import {
   Users, 
   LogOut, 
   Settings,
-  ChevronDown,
   RefreshCw,
   BarChart3
 } from 'lucide-react';
+import Dropdown from './Dropdown';
 
 const SidebarIcon = ({ to, icon: Icon }) => (
   <NavLink
@@ -33,6 +33,21 @@ const Layout = () => {
     logout();
     navigate('/login');
   };
+
+  const monthOptions = [
+    { label: 'Jan 2026', value: '1' },
+    { label: 'Feb 2026', value: '2' },
+    { label: 'Mar 2026', value: '3' },
+    { label: 'Apr 2026', value: '4' },
+    { label: 'May 2026', value: '5' },
+    { label: 'Jun 2026', value: '6' }
+  ];
+
+  const viewOptions = [
+    { label: 'Standard View', value: 'std' },
+    { label: 'Compact View', value: 'cmp' },
+    { label: 'Admin View', value: 'adm' }
+  ];
 
   return (
     <div className="flex h-screen bg-app font-sans text-white">
@@ -63,18 +78,21 @@ const Layout = () => {
         {/* Top Header */}
         <header className="h-16 bg-app px-8 flex items-center justify-between z-10 shrink-0">
           <div className="flex items-center gap-4">
-            <button className="bg-[#2A2A2A] text-white font-medium py-1.5 px-4 rounded-full hover:bg-[#333] transition-all flex items-center gap-2 text-sm">
-              <span>May 2026</span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-            <button className="bg-[#2A2A2A] text-white font-medium py-1.5 px-4 rounded-full hover:bg-[#333] transition-all flex items-center gap-2 text-sm">
-              <BarChart3 className="w-4 h-4" />
-              <span>Edit View</span>
-            </button>
+            <Dropdown 
+              label="May 2026" 
+              options={monthOptions} 
+              onSelect={(opt) => console.log('Selected month:', opt)} 
+            />
+            <Dropdown 
+              label="Edit View" 
+              icon={BarChart3}
+              options={viewOptions} 
+              onSelect={(opt) => console.log('Selected view:', opt)} 
+            />
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="bg-white text-app font-bold py-1.5 px-5 rounded-full hover:bg-slate-100 transition-all flex items-center gap-2 text-sm">
+            <button className="bg-white text-app font-bold py-1.5 px-5 rounded-full hover:bg-slate-50 transition-all active:scale-95 flex items-center gap-2 text-sm shadow-xl shadow-white/5">
               <RefreshCw className="w-4 h-4" />
               <span>Refresh</span>
             </button>
